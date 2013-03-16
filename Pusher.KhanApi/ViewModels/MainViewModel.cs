@@ -127,11 +127,7 @@ namespace Pusher.KhanApi
             }
         }
 
-        public void TrackPageView(string title, string path)
-        {
-            path = path.Replace('/', '-').Replace(' ', '_');
-            //tracker.TrackPageView(title, path);
-        }
+       
 
         #region Private Methods
 

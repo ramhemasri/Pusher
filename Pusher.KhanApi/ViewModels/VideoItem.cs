@@ -27,9 +27,6 @@ namespace Pusher.KhanApi
 
         public void Navigate()
         {
-
-            App.ViewModel.TrackPageView(this.Name, "/" + this.Parent + "/Video/" + this.Name);
-            
             bool noVideoFileUri = this.VideoFileUri == null || string.IsNullOrWhiteSpace(this.VideoFileUri.ToString());
 #if !WINDOWS_PHONE
             if (noVideoFileUri)
@@ -41,18 +38,24 @@ namespace Pusher.KhanApi
                 Windows.System.Launcher.LaunchUriAsync(this.VideoFileUri);
             }
 #else
-            WebBrowserTask browser = new WebBrowserTask();
 
-            if (noVideoFileUri)
+            if (this.VideoFileUri != null && !string.IsNullOrEmpty(this.VideoFileUri.ToString()))
             {
-                browser.Uri = this.VideoUri;
+                var launcher = new MediaPlayerLauncher
+                {
+                    Controls = MediaPlaybackControls.All,
+                    Media = this.VideoFileUri
+                };
+                launcher.Show();
+
+
             }
             else
             {
-                browser.Uri = this.VideoFileUri;
+                WebBrowserTask browser = new WebBrowserTask();
+                browser.URL = this.VideoUri.ToString();
+                browser.Show();
             }
-
-            browser.Show();
 #endif
         }
     }
