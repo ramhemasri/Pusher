@@ -28,6 +28,13 @@ namespace Pusher.TestApp
 
         private void MainListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // If selected index is -1 (no selection) do nothing
+            if (MainListBox.SelectedIndex == -1)
+                return;
+            var item = MainListBox.SelectedItem as Item;
+            // Navigate to the new page
+            NavigationService.Navigate(new Uri("/Items.xaml?name=" + item.Name, UriKind.Relative));
+            MainListBox.SelectedIndex = -1;
 
         }
 

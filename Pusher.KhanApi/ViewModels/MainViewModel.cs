@@ -6,6 +6,9 @@ using Pusher.KhanApi.Models;
 
 #if WINDOWS_PHONE
 using Microsoft.Phone.Shell;
+using System.IO.IsolatedStorage;
+using System.IO;
+using Newtonsoft.Json;
 #endif
 
 namespace Pusher.KhanApi
@@ -18,6 +21,8 @@ namespace Pusher.KhanApi
         {
             this.Groups = new ObservableCollection<GroupItem>();
             this.Categories = new ObservableCollection<CategoryItem>();
+            this.Lessons = new ObservableCollection<Lesson>();
+           
         }
 
         #region Properties
@@ -25,6 +30,10 @@ namespace Pusher.KhanApi
         public ObservableCollection<GroupItem> Groups { get; private set; }
 
         public ObservableCollection<CategoryItem> Categories { get; private set; }
+
+        public ObservableCollection<Lesson> Lessons { get; private set; }
+
+        private const string FileName = "courseprogress.json";
 
         public bool Querying { get; set; }
 
@@ -124,8 +133,44 @@ namespace Pusher.KhanApi
                 this.IsDataLoaded = true;
                 
                 CategoryItem.Initialize(this.Groups, this.Categories);
+
+                using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    using (var fileStream = store.OpenFile(FileName, FileMode.OpenOrCreate, FileAccess.Read))
+                    {
+                        using (var reader = new StreamReader(fileStream))
+                        {
+                            var data = reader.ReadToEnd();
+
+                            if (string.IsNullOrWhiteSpace(data))
+                            {
+                                this.Lessons = new ObservableCollection<Lesson>();
+                            }
+                            else
+                            {
+                                this.Lessons = new ObservableCollection<Lesson>(JsonConvert.DeserializeObject<Lesson[]>(data));
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        public void SaveData()
+        {
+            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                using (var fileStream = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
+                {
+                    using (var writer = new StreamWriter(fileStream))
+                    {
+                        writer.Write(JsonConvert.SerializeObject(this.Lessons));
+                        writer.Close();
+                    }
+                }
+            }
+        }
+
 
        
 

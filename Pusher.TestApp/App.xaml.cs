@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Pusher.TestApp.Resources;
+using Pusher.KhanApi;
 
 namespace Pusher.TestApp
 {
@@ -17,6 +18,8 @@ namespace Pusher.TestApp
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        public static VideoItem SelectedVideoItem { get; set; }
 
         /// <summary>
         /// Constructor for the Application object.
